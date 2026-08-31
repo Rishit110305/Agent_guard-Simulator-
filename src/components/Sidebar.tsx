@@ -16,10 +16,12 @@ const ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { isOpen } = useSidebar();
+  const { isOpen, setIsOpen } = useSidebar();
 
   return (
     <aside 
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
       className={clsx(
         "hidden md:flex flex-col border-r border-border bg-[#050505] transition-all duration-300 ease-in-out shrink-0 relative",
         isOpen ? "w-[240px]" : "w-16 items-center"
