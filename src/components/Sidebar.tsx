@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Home, Users, ShieldCheck, Bell, LogOut, Sparkles, Mail, Search, PanelLeft, Info, Download } from "lucide-react";
+import { Zap, Home, Users, ShieldCheck, Bell, LogOut, Sparkles, Mail, Search, PanelLeft, Info, Download, LineChart } from "lucide-react";
 import clsx from "clsx";
 import { useSidebar } from "./SidebarProvider";
 
 const ITEMS = [
   { href: "/dashboard", icon: Home, label: "Home" },
+  { href: "/dashboard/finance", icon: LineChart, label: "Finance Dashboard" },
   { href: "/about", icon: Info, label: "About Us" },
   { href: "/contact", icon: Mail, label: "Contact Us" },
   { href: "/download", icon: Download, label: "Download App" },
