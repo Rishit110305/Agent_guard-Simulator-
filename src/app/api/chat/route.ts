@@ -72,7 +72,7 @@ CHATBOT GUARDRAILS
 
     const chatCompletion = await groq.chat.completions.create({
       messages: formattedMessages,
-      model: "llama-3.1-8b-instant", // valid groq model
+      model: "openai/gpt-oss-20b", // valid groq model
     });
 
     const reply = chatCompletion.choices[0]?.message?.content || "";
