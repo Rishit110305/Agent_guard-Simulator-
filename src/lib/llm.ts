@@ -16,7 +16,38 @@ export interface LlmResult {
  * Falls back to a mock agent when no API key is configured, so the whole
  * pipeline is demoable with zero external dependency.
  */
-export async function callAgent(systemPrompt: string, persona: Persona): Promise<LlmResult> {
+export async function callAgent(systemPromptOrUrl: string, persona: Persona): Promise<LlmResult> {
+  // NEW FEATURE: Infrastructure Testing via Webhook
+  if (systemPromptOrUrl.startsWith("http://") || systemPromptOrUrl.startsWith("https://")) {
+    try {
+      const res = await fetch(systemPromptOrUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: persona.message,
+          persona: persona.name,
+          category: persona.category
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      // Try to intelligently parse common response formats
+      const text = data.reply || data.response || data.message || data.text || JSON.stringify(data);
+      
+      return {
+        text: text.slice(0, 500), // safety bounds
+        tokensUsed: 150,
+        mocked: false,
+      };
+    } catch (e) {
+      return {
+        text: `[CONNECTION FAILED] AgentGuard could not reach your webhook at ${systemPromptOrUrl}`,
+        tokensUsed: 0,
+        mocked: false,
+      };
+    }
+  }
+
+  const systemPrompt = systemPromptOrUrl;
   if (client) {
     try {
       const completion = await client.chat.completions.create({

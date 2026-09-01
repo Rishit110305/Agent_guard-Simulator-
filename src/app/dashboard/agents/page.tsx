@@ -83,10 +83,10 @@ export default function AgentsPage() {
           {SCENARIOS.map((s, i) => (
             <ScenarioCard key={s.title} {...s} active={i === 0} />
           ))}
-          <h3 className="text-sm font-medium text-muted mb-1 mt-2">Test your own agent (Optional)</h3>
+          <h3 className="text-sm font-medium text-muted mb-1 mt-2">Test your own agent or Webhook</h3>
           <textarea
             className="w-full bg-[#111] border border-white/10 rounded-xl p-3 text-sm text-white/80 placeholder:text-white/30 focus:outline-none focus:border-mint/50 transition-colors resize-none h-24 scrollbar-thin"
-            placeholder="Paste your agent's system prompt here to test it against our simulation. Leave blank to use the built-in demo bot."
+            placeholder="Paste your agent's system prompt OR your live API Webhook URL (https://...) to stress-test your deployed infrastructure."
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
             disabled={starting || !!isRunning}
