@@ -25,6 +25,7 @@ export default function AgentsPage() {
   const [starting, setStarting] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showAddPersona, setShowAddPersona] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState("");
   const alertedRef = useRef(false);
   const { run, live } = useRunSocket(runId);
 
@@ -32,7 +33,11 @@ export default function AgentsPage() {
     setStarting(true);
     setShowAlert(false);
     alertedRef.current = false;
-    const res = await fetch("/api/runs", { method: "POST" });
+    const res = await fetch("/api/runs", { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customPrompt: customPrompt || undefined })
+    });
     const { id } = await res.json();
     setStarting(false);
     setRunId(id);
@@ -78,11 +83,19 @@ export default function AgentsPage() {
           {SCENARIOS.map((s, i) => (
             <ScenarioCard key={s.title} {...s} active={i === 0} />
           ))}
-          <Button onClick={startDemo} disabled={starting || !!isRunning} className="mt-2">
+          <h3 className="text-sm font-medium text-muted mb-1 mt-2">Test your own agent (Optional)</h3>
+          <textarea
+            className="w-full bg-[#111] border border-white/10 rounded-xl p-3 text-sm text-white/80 placeholder:text-white/30 focus:outline-none focus:border-mint/50 transition-colors resize-none h-24 scrollbar-thin"
+            placeholder="Paste your agent's system prompt here to test it against our simulation. Leave blank to use the built-in demo bot."
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+            disabled={starting || !!isRunning}
+          />
+          <Button onClick={startDemo} disabled={starting || !!isRunning} className="mt-2 h-12 text-base">
             {starting || isRunning ? <Loader2 size={18} className="animate-spin" /> : <PlayCircle size={18} />}
-            {isRunning ? "Running..." : "Run Demo"}
+            {isRunning ? "Running..." : "Run Simulation"}
           </Button>
-          <Button onClick={() => setShowAddPersona(true)} disabled={starting || !!isRunning} className="bg-transparent border border-white/20 hover:bg-white/5 text-white/80">
+          <Button onClick={() => setShowAddPersona(true)} disabled={starting || !!isRunning} className="bg-transparent border border-white/10 hover:bg-white/5 text-white/60 hover:text-white h-10">
             + Add Custom Persona
           </Button>
         </div>
@@ -154,9 +167,17 @@ export default function AgentsPage() {
               <div className="text-xs text-mint font-bold uppercase tracking-widest mb-1">Auto-Patch Deployed</div>
               <p className="text-sm text-mint/80 font-mono bg-mint/5 p-3 rounded-lg border border-mint/10 mb-2">{run.patchApplied}</p>
               {run.agentVersionAfter && run.agentVersionAfter !== run.agentVersionBefore && (
-                <div className="flex items-center gap-2 mt-3 text-mint">
-                  <div className="px-2 py-1 rounded bg-mint/10 border border-mint/20 text-xs font-bold tracking-widest uppercase">Agent Baseline Updated</div>
-                  <span className="text-sm font-mono opacity-80">v{run.agentVersionBefore} → v{run.agentVersionAfter}</span>
+                <div className="mt-4">
+                  <div className="flex items-center gap-2 text-mint mb-2">
+                    <div className="px-2 py-1 rounded bg-mint/10 border border-mint/20 text-[10px] font-bold tracking-widest uppercase">Agent Baseline Updated</div>
+                    <span className="text-xs font-mono opacity-80">v{run.agentVersionBefore} → v{run.agentVersionAfter}</span>
+                  </div>
+                  {(run as any).customPatch && (
+                    <div className="p-3 bg-mint/5 border border-mint/20 rounded-xl text-xs text-mint/90 font-mono leading-relaxed h-32 overflow-y-auto scrollbar-thin">
+                      <div className="font-sans font-bold uppercase tracking-widest text-[10px] mb-1 opacity-70">Generated Secure Prompt:</div>
+                      {(run as any).customPatch}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -73,6 +73,7 @@ export interface RunState {
   scoresAfter?: ScoreSet;
   totalPersonas: number;
   /** Agent-under-test version this run started from, and ended on (Module 06 persistence). */
-  agentVersionBefore?: number;
-  agentVersionAfter?: number;
+  agentVersionBefore?: number | string;
+  agentVersionAfter?: number | string;
+  customPatch?: string;
 }

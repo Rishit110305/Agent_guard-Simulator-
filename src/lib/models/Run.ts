@@ -27,8 +27,9 @@ const RunSchema = new Schema(
     scoresBefore: { type: Schema.Types.Mixed },
     scoresAfter: { type: Schema.Types.Mixed },
     totalPersonas: { type: Number, required: true },
-    agentVersionBefore: { type: Number },
-    agentVersionAfter: { type: Number },
+    agentVersionBefore: { type: Schema.Types.Mixed },
+    agentVersionAfter: { type: Schema.Types.Mixed },
+    customPatch: { type: String },
   },
   { versionKey: false }
 );

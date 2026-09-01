@@ -39,12 +39,12 @@ async function runBatch(
  * Module 06 (Learning Loop): starts from whatever the agent last learned —
  * see agentState.ts — and commits any new patch back for the NEXT run.
  */
-export async function runDemoPipeline(runId: string) {
+export async function runDemoPipeline(runId: string, customPrompt?: string) {
   const personas = buildRunSet();
   const agentState = await getAgentState();
-  const basePrompt = agentState.prompt;
+  const basePrompt = customPrompt || agentState.prompt;
 
-  await updateRun(runId, { status: "chaos_input", agentVersionBefore: agentState.version });
+  await updateRun(runId, { status: "chaos_input", agentVersionBefore: customPrompt ? "Custom-v1" : agentState.version });
   await appendLog(
     runId,
     `Injecting ${personas.length} synthetic users (${CONCURRENCY} concurrent) against agent v${agentState.version}...`,
@@ -124,12 +124,17 @@ export async function runDemoPipeline(runId: string) {
       // This is the actual fix: persist the hardened prompt as the new
       // baseline so the NEXT run starts smarter, instead of relearning
       // the same fix every time.
-      const newState = await commitAgentPatch(patchedPrompt, reasons.join(" "));
-      await updateRun(runId, { agentVersionAfter: newState.version });
-      await appendLog(runId, `Agent baseline updated: v${agentState.version} → v${newState.version}. Next run starts here.`, "success");
+      if (!customPrompt) {
+        const newState = await commitAgentPatch(patchedPrompt, reasons.join(" "));
+        await updateRun(runId, { agentVersionAfter: newState.version });
+        await appendLog(runId, `Agent baseline updated: v${agentState.version} → v${newState.version}. Next run starts here.`, "success");
+      } else {
+        await updateRun(runId, { agentVersionAfter: "Custom-v2", customPatch: patchedPrompt });
+        await appendLog(runId, `Custom Agent successfully patched. Your new secure system prompt is ready!`, "success");
+      }
     }
   } else {
-    await updateRun(runId, { scoresAfter: scoresBefore, agentVersionAfter: agentState.version });
+    await updateRun(runId, { scoresAfter: scoresBefore, agentVersionAfter: customPrompt ? "Custom-v1" : agentState.version });
   }
 
   await updateRun(runId, { status: "done" });

@@ -4,16 +4,17 @@ import { runDemoPipeline } from "@/lib/simulate";
 import { buildRunSet } from "@/lib/scenario";
 import { appendLog, updateRun } from "@/lib/store";
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
+    const body = await req.json().catch(() => ({}));
+    const customPrompt = body.customPrompt?.trim() || undefined;
+
     const id = `RUN_${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const total = buildRunSet().length;
     await createRun(id, total);
 
-    // Fire and forget — the client polls GET /api/runs/[id] for progress.
-    // Failures inside the pipeline are written back onto the run itself
-    // rather than thrown into the void, so the UI can surface them.
-    runDemoPipeline(id).catch(async (err) => {
+    // Fire and forget
+    runDemoPipeline(id, customPrompt).catch(async (err) => {
       console.error(`Run ${id} failed:`, err);
       await appendLog(id, `Pipeline error: ${err instanceof Error ? err.message : "unknown error"}`, "error");
       await updateRun(id, { status: "done" });
