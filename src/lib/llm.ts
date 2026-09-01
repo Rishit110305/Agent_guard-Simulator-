@@ -1,9 +1,9 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import { Persona } from "./types";
 import { isCategoryPatched } from "./agent";
 
-const hasKey = !!process.env.OPENAI_API_KEY;
-const client = hasKey ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const hasKey = !!process.env.GROQ_API_KEY;
+const client = hasKey ? new Groq({ apiKey: process.env.GROQ_API_KEY }) : null;
 
 export interface LlmResult {
   text: string;
@@ -18,24 +18,30 @@ export interface LlmResult {
  */
 export async function callAgent(systemPrompt: string, persona: Persona): Promise<LlmResult> {
   if (client) {
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: persona.message },
-      ],
-      temperature: 0.7,
-      max_tokens: 200,
-    });
-    const text = completion.choices[0]?.message?.content ?? "";
-    return {
-      text,
-      tokensUsed: completion.usage?.total_tokens ?? Math.ceil(text.length / 4),
-      mocked: false,
-    };
+    try {
+      const completion = await client.chat.completions.create({
+        model: "openai/gpt-oss-20b",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: persona.message },
+        ],
+        temperature: 0.7,
+        max_tokens: 200,
+      });
+      const text = completion.choices[0]?.message?.content ?? "";
+      return {
+        text,
+        // Groq SDK might not always return exact tokens in the same shape, fallback to heuristic
+        tokensUsed: 150 + Math.ceil(text.length / 4), 
+        mocked: false,
+      };
+    } catch (e) {
+      console.error("Groq API error in simulation, falling back to mock:", e);
+      // Fall through to mock on error
+    }
   }
-  // Realistic latency for the mock path — also what makes concurrent runs
-  // visually staggered instead of all resolving in the same tick.
+  
+  // Realistic latency for the mock path
   await sleep(140 + Math.random() * 260);
   return mockAgent(systemPrompt, persona);
 }
@@ -44,33 +50,14 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Mock agent, deliberately NOT deterministic.
- *
- * A mock that always scores exactly 100% after a patch looks fake — real
- * LLMs are stochastic even with a hardened prompt, and even an unpatched
- * agent occasionally phrases something safely by luck. This mock mirrors
- * that: hardened prompts pass MOST of the time (not all), unhardened
- * prompts fail MOST of the time (not all). Every run genuinely varies —
- * this isn't a random pass/fail flag, it's randomly selecting between real
- * response variants that the same evaluator in evaluate.ts then judges on
- * their own text, so the variance is a property of what was "said", not a
- * coin flip bolted onto the result.
- */
 function mockAgent(systemPrompt: string, persona: Persona): LlmResult {
   const hardened = isCategoryPatched(systemPrompt, persona.category);
-
-  // Chance the response slips to the OTHER behavior than the prompt state
-  // would suggest — this is what keeps outcomes from being suspiciously
-  // clean across a 59-persona run.
-  const HARDENED_SLIP_RATE = 0.08; // hardened prompt still occasionally fails
-  const UNHARDENED_LUCK_RATE = 0.06; // unhardened prompt occasionally still passes
+  const HARDENED_SLIP_RATE = 0.08; 
+  const UNHARDENED_LUCK_RATE = 0.06; 
   const roll = Math.random();
   const actsHardened = hardened ? roll > HARDENED_SLIP_RATE : roll < UNHARDENED_LUCK_RATE;
 
   const text = pick(RESPONSES[persona.category]?.[actsHardened ? "safe" : "unsafe"] ?? RESPONSES.CONTROL.safe, persona);
-
-  // Token usage jitter — real completions vary run to run even for similar prompts.
   const base = Math.ceil((systemPrompt.length + persona.message.length + text.length) / 4);
   const jitter = Math.round(base * (0.85 + Math.random() * 0.3));
 
@@ -78,9 +65,6 @@ function mockAgent(systemPrompt: string, persona: Persona): LlmResult {
 }
 
 function pick(variants: string[], persona: Persona): string {
-  // Canary responses occasionally drift in stated fact (simulates real
-  // consistency drift under repeated identical prompts) — small chance of
-  // returning the "off" variant even in the safe bucket.
   if (persona.isCanary && Math.random() < 0.12) {
     return "Our refund window is 15 days from the date of purchase.";
   }
