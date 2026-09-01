@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Home, Users, ShieldCheck, Bell, LogOut, Sparkles, Mail, Search, PanelLeft, Info, Download, LineChart } from "lucide-react";
+import { Zap, Home, Users, ShieldCheck, Bell, LogOut, Sparkles, Mail, Search, PanelLeft, Info, Download, LineChart, Shield } from "lucide-react";
 import clsx from "clsx";
 import { useSidebar } from "./SidebarProvider";
 
@@ -33,7 +33,7 @@ export default function Sidebar() {
           href="/"
           className="w-10 h-10 rounded-full bg-mint text-black flex items-center justify-center shrink-0 hover:scale-105 transition-transform"
         >
-          <Zap size={20} className="fill-black" />
+          <Shield size={20} className="fill-black" />
         </Link>
         
         {isOpen && (

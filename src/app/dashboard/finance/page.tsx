@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, BarChart, Bar, Legend } from "recharts";
-import { TrendingUp, Activity, Target, ShieldCheck, ArrowUpRight, Zap, Briefcase, FileText, CheckCircle2, XCircle } from "lucide-react";
+import { TrendingUp, Activity, Target, ShieldCheck, ArrowUpRight, Shield, Briefcase, FileText, CheckCircle2, XCircle } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 
@@ -221,7 +221,7 @@ export default function FinanceDashboard() {
                 <td className="px-6 py-4 text-right font-mono text-white/50">High (Enterprise)</td>
               </tr>
               <tr className="bg-mint/5 border-l-2 border-mint">
-                <td className="px-6 py-4 font-bold text-mint flex items-center gap-2"><Zap size={16} /> AgentGuard</td>
+                <td className="px-6 py-4 font-bold text-mint flex items-center gap-2"><Shield size={16} /> AgentGuard</td>
                 <td className="px-6 py-4 text-mint font-medium flex items-center gap-2"><CheckCircle2 size={16} /> Full 360° Simulation</td>
                 <td className="px-6 py-4 text-mint font-medium flex items-center gap-2"><CheckCircle2 size={16} /> Autonomous</td>
                 <td className="px-6 py-4 text-right font-mono font-bold text-mint">$0.50 / Run</td>

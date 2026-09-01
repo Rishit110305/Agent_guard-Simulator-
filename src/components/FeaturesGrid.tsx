@@ -1,4 +1,4 @@
-import { BarChart2, LayoutDashboard, Users, Zap, Puzzle, ShieldCheck } from "lucide-react";
+import { BarChart2, LayoutDashboard, Users, Shield, Puzzle, ShieldCheck } from "lucide-react";
 
 const FEATURES = [
   {
@@ -24,7 +24,7 @@ const FEATURES = [
     isLarge: true,
   },
   {
-    icon: Zap,
+    icon: Shield,
     title: "Efficiency",
     desc: "Optimized pipelines",
     colSpan: "col-span-12 md:col-span-7",

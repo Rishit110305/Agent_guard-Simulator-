@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Zap, Smartphone, Monitor, Cpu, Activity, Search } from "lucide-react";
+import { ArrowLeft, Shield, Smartphone, Monitor, Cpu, Activity, Search } from "lucide-react";
 
 const INTEGRATIONS = [
   { letter: "O", name: "OpenAI", desc: "Seamless integration for OpenAI ChatGPT.", badge: "Popular" },
@@ -29,7 +29,7 @@ export default function DownloadPage() {
           <div className="bg-[#111] border border-white/5 rounded-3xl p-8 md:p-12 flex flex-col relative overflow-hidden">
             <div className="flex items-center gap-4 mb-6 relative z-10">
               <div className="w-14 h-14 rounded-2xl bg-mint flex items-center justify-center shrink-0">
-                <Zap size={28} className="text-black fill-black" />
+                <Shield size={28} className="text-black fill-black" />
               </div>
               <h2 className="text-3xl font-bold tracking-tight">AgentGuard App</h2>
             </div>
@@ -77,7 +77,7 @@ export default function DownloadPage() {
               
               <div className="flex gap-4">
                 <div className="w-10 h-10 rounded-xl bg-mint/10 flex items-center justify-center shrink-0 mt-1">
-                  <Zap size={18} className="text-mint" />
+                  <Shield size={18} className="text-mint" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white mb-1">Auto-Improvement</h4>

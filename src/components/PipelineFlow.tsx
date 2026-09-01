@@ -1,12 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Bug, Zap, Play, Gauge, RefreshCw, Sparkles } from "lucide-react";
+import { Bug, Shield, Play, Gauge, RefreshCw, Sparkles } from "lucide-react";
 import { RunPhase } from "@/lib/types";
 
 const NODES = [
   { key: "generate", label: "Generate", icon: Bug, phases: ["chaos_input"] },
-  { key: "stress", label: "Stress", icon: Zap, phases: ["chaos_input"] },
+  { key: "stress", label: "Stress", icon: Shield, phases: ["chaos_input"] },
   { key: "execute", label: "Execute", icon: Play, phases: ["chaos_input", "failure_detection"] },
   { key: "evaluate", label: "Evaluate", icon: Gauge, phases: ["failure_detection", "root_cause"] },
   { key: "learn", label: "Learn", icon: RefreshCw, phases: ["auto_improve"] },

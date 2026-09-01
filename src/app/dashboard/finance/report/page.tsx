@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ArrowLeft, Printer, TrendingUp, Building2, Calendar, Target, Activity, ShieldCheck, Briefcase, Zap, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Printer, TrendingUp, Building2, Calendar, Target, Activity, ShieldCheck, Briefcase, Shield, CheckCircle2, XCircle } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 
@@ -30,7 +30,7 @@ export default function FinanceReport() {
         <div className="flex justify-between items-end border-b-[3px] border-slate-900 pb-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Zap size={28} className="text-slate-900" />
+              <Shield size={28} className="text-slate-900" />
               <h1 className="text-4xl font-black font-sans tracking-tight text-slate-900">AgentGuard</h1>
             </div>
             <p className="text-lg text-slate-600 font-sans font-medium uppercase tracking-widest">Financial & Unit Economics Audit</p>
@@ -211,7 +211,7 @@ export default function FinanceReport() {
                 <td className="py-3 px-4 text-right text-slate-500 font-mono">Medium</td>
               </tr>
               <tr className="bg-slate-900 text-white">
-                <td className="py-3 px-4 font-bold flex items-center gap-2"><Zap size={14} className="text-mint" /> AgentGuard</td>
+                <td className="py-3 px-4 font-bold flex items-center gap-2"><Shield size={14} className="text-mint" /> AgentGuard</td>
                 <td className="py-3 px-4 font-semibold flex items-center gap-2"><CheckCircle2 size={14} className="text-mint" /> Full 360° Agent Eval</td>
                 <td className="py-3 px-4 font-semibold flex items-center gap-2"><CheckCircle2 size={14} className="text-mint" /> Yes (Module 06)</td>
                 <td className="py-3 px-4 text-right font-mono font-bold text-mint">$0.50 / Run</td>
