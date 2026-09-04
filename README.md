@@ -18,7 +18,7 @@ mock agent and an in-memory store out of the box (see "Two modes" and "Database"
 Click **Run Demo** on `/dashboard/agents` to trigger the full pipeline.
 
 To test against a real model, or persist runs to a real database, copy `.env.example` to
-`.env.local` and set `OPENAI_API_KEY` / `MONGODB_URI`.
+`.env.local` and set `GROQ_API_KEY` / `MONGODB_URI`.
 
 ## What's actually implemented (honest mapping to the 6-module deck)
 
@@ -37,7 +37,7 @@ To test against a real model, or persist runs to a real database, copy `.env.exa
   answers depend on whether the system prompt has been patched yet — so the before/after
   score improvement (verified: 31%→100% reliability, 0%→100% safety in a real test run) is
   a real effect of the patch, not a hardcoded number.
-- **Real agent**: set `OPENAI_API_KEY` and the same code path calls `gpt-4o-mini` instead.
+- **Real agent**: set `GROQ_API_KEY` and the same code path calls `llama-3.1-8b-instant` instead.
   Real models usually fail a similar subset of personas against the unpatched prompt, so the
   demo still works, just with less predictable timing — test this before presenting.
 
